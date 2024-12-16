@@ -1,5 +1,5 @@
 let particles = [];
-let particleCount = 800;
+let particleCount = 600;
 let mouse = {
   x: undefined,
   y: undefined
