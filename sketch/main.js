@@ -1,5 +1,5 @@
 let particles = [];
-let particleCount = 600;
+let particleCount = 800;
 let mouse = {
   x: undefined,
   y: undefined
@@ -100,7 +100,7 @@ class Particle {
     this.pangle = this.angle;
 
     this.speed = random(2, 5); // Randomize speed
-    this.blur = 5;
+    this.blur = 1000;
     this.style = this.generateHSBColor(); // Generate HSB-based color
     this.defaultColor = this.style; // Store initial random color
   }
@@ -115,9 +115,19 @@ class Particle {
     return generatedColor;
   }
 
+  generatePastelColor() {
+    colorMode(HSB); // Switch to HSB mode
+    const h = random(360); // Full hue range
+    const s = random(20, 40); // Lower saturation for pastel tones
+    const b = random(85, 100); // High brightness for pastel tones
+    const pastelColor = color(h, s, b);
+    colorMode(RGB); // Restore to RGB mode
+    return pastelColor;
+  }
+
   draw() {
     push();
-    strokeWeight(1);
+    strokeWeight(1.5);
     stroke(this.style);
     line(this.px, this.py, this.x, this.y);
     pop();
@@ -131,7 +141,7 @@ class Particle {
       const distance = dist(this.x, this.y, mouse.x, mouse.y);
 
       if (distance < 100) {
-        this.style = color(255, 0, 150); // Change color near mouse
+        this.style = color(255, 255, 0); // Change color near mouse
       } else {
         this.style = this.defaultColor; // Revert to default color
       }
@@ -158,6 +168,7 @@ class Particle {
 
   spread() {
     this.angle = random(360); // Reset to random direction
+    this.style = this.generatePastelColor(); // Assign a pastel color
   }
 
   explode(index) {
@@ -172,8 +183,7 @@ class Particle {
     if (mouse.x !== undefined) {
       this.angle = this.getAngle(this.x, this.y, mouse.x, mouse.y); // Move towards mouse
       this.speed = random(5, 10); // Increase speed
-      // 유지되는 색상은 초기 랜덤 색상을 사용
-      this.style = this.defaultColor;
+      this.style = this.defaultColor; // Retain initial random color
     }
   }
 }
