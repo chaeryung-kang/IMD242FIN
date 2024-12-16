@@ -5,9 +5,9 @@ let mouse = {
   y: undefined
 };
 
-let exploded = false; // Track explosion state
-let clusters = []; // Store cluster positions
-const clusterCount = 4; // Number of clusters
+let exploded = false;
+let clusters = [];
+const clusterCount = 4;
 
 const aspectW = 4;
 const aspectH = 3;
@@ -29,12 +29,12 @@ function setup() {
   for (let i = 0; i < particleCount; i++) {
     particles.push(new Particle());
   }
-  createClusters(); // Initialize clusters
+  createClusters();
 }
 
 function draw() {
   fill(34, 34, 34, 20);
-  rect(0, 0, width, height); // Clear screen with a transparent layer
+  rect(0, 0, width, height);
 
   particles.forEach(p => {
     p.update();
@@ -52,20 +52,20 @@ function mouseOut() {
   mouse.y = undefined;
 
   particles.forEach(p => {
-    p.spread(); // Add spreading effect when mouse is out
+    p.spread();
   });
 }
 
 function mousePressed() {
   if (!exploded) {
     particles.forEach(p => {
-      p.explodeToMouse(); // Move particles towards mouse on first click
+      p.explodeToMouse();
     });
     exploded = true;
   } else {
-    createClusters(); // Generate new cluster positions
+    createClusters();
     particles.forEach((p, index) => {
-      p.explode(index); // Scatter particles to clusters on second click
+      p.explode(index);
     });
     exploded = false;
   }
@@ -75,7 +75,7 @@ function createClusters() {
   clusters = [];
   for (let i = 0; i < clusterCount; i++) {
     clusters.push({
-      x: random(50, width - 50), // Ensure clusters are within canvas
+      x: random(50, width - 50),
       y: random(50, height - 50)
     });
   }
@@ -99,35 +99,35 @@ class Particle {
     this.angle = random(360);
     this.pangle = this.angle;
 
-    this.speed = random(2, 5); // Randomize speed
+    this.speed = random(2, 5);
     this.blur = 1000;
-    this.style = this.generateHSBColor(); // Generate HSB-based color
-    this.defaultColor = this.style; // Store initial random color
+    this.style = this.generateHSBColor();
+    this.defaultColor = this.style;
   }
 
   generateHSBColor() {
-    colorMode(HSB); // HSB 모드 활성화
-    const h = random(360); // 전체 색상 범위에서 랜덤 선택
-    const s = random(50, 80); // 적당히 높은 채도
-    const b = random(80, 100); // 밝은 색상
+    colorMode(HSB);
+    const h = random(360);
+    const s = random(50, 80);
+    const b = random(80, 100);
     const generatedColor = color(h, s, b);
-    colorMode(RGB); // RGB 모드로 복구
+    colorMode(RGB);
     return generatedColor;
   }
 
   generatePastelColor() {
-    colorMode(HSB); // Switch to HSB mode
-    const h = random(360); // Full hue range
-    const s = random(20, 40); // Lower saturation for pastel tones
-    const b = random(85, 100); // High brightness for pastel tones
+    colorMode(HSB);
+    const h = random(360);
+    const s = random(10, 30);
+    const b = random(90, 100);
     const pastelColor = color(h, s, b);
-    colorMode(RGB); // Restore to RGB mode
+    colorMode(RGB);
     return pastelColor;
   }
 
   draw() {
     push();
-    strokeWeight(1.5);
+    strokeWeight(2);
     stroke(this.style);
     line(this.px, this.py, this.x, this.y);
     pop();
@@ -141,9 +141,9 @@ class Particle {
       const distance = dist(this.x, this.y, mouse.x, mouse.y);
 
       if (distance < 100) {
-        this.style = color(255, 255, 0); // Change color near mouse
+        this.style = color(255, 255, 0);
       } else {
-        this.style = this.defaultColor; // Revert to default color
+        this.style = this.defaultColor;
       }
 
       this.angle = this.getAngle(this.x, this.y, mouse.x, mouse.y);
@@ -167,23 +167,22 @@ class Particle {
   }
 
   spread() {
-    this.angle = random(360); // Reset to random direction
-    this.style = this.generatePastelColor(); // Assign a pastel color
+    this.angle = random(360);
+    this.style = this.generatePastelColor();
   }
 
   explode(index) {
-    // Assign particle to a specific cluster
     const cluster = clusters[index % clusters.length];
     this.angle = this.getAngle(this.x, this.y, cluster.x, cluster.y);
-    this.speed = random(5, 10); // Increase speed for explosion effect
-    this.style = this.generateHSBColor(); // Randomize to a new HSB color
+    this.speed = random(5, 10);
+    this.style = this.generateHSBColor();
   }
 
   explodeToMouse() {
     if (mouse.x !== undefined) {
-      this.angle = this.getAngle(this.x, this.y, mouse.x, mouse.y); // Move towards mouse
-      this.speed = random(5, 10); // Increase speed
-      this.style = this.defaultColor; // Retain initial random color
+      this.angle = this.getAngle(this.x, this.y, mouse.x, mouse.y);
+      this.speed = random(5, 10);
+      this.style = this.defaultColor;
     }
   }
 }
